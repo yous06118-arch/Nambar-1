@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>NAMBAR 1 - Pro System v3.0</title>
+    <style>
+        @font-face { font-family: 'Cairo'; src: local('Arial'); }
+        :root { --main: #00d2d3; --bg: #0a0e12; --card: #161d24; --text: #ffffff; --danger: #ff4757; --success: #05c46b; --warning: #f1c40f; }
+        * { box-sizing: border-box; }
+        body { font-family: 'Cairo', sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 0; overflow-x: hidden; }
+
+        /* 1. واجهة ترحيبية */
+        #splash {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; z-index: 10000;
+        }
+        .logo-pulse { font-size: 50px; color: var(--main); font-weight: bold; animation: pulse 2s infinite; text-align: center; }
+        @keyframes pulse { 0%, 100% { transform: scale(0.9); opacity: 0.7; } 50% { transform: scale(1); opacity: 1; } }
+
+        /* 2. واجهة الدخول */
+        #login-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg); display: none; justify-content: center; align-items: center; z-index: 9000;
+        }
+        .login-card {
+            background: var(--card); padding: 30px; border-radius: 20px;
+            border: 2px solid var(--main); width: 90%; max-width: 350px; text-align: center;
+        }
+        .login-card input { width: 100%; padding: 15px; margin: 10px 0; background: #1c242b; border: 1px solid #444; color: #fff; border-radius: 12px; text-align: center; font-size: 16px; outline: none; }
+
+        /* 3. واجهة البرنامج الرئيسية */
+        #main-app { display: none; }
+        header { background: var(--card); padding: 15px; text-align: center; border-bottom: 3px solid var(--main); position: relative; }
+        .priv-btn { position: absolute; left: 15px; top: 18px; background: none; border: none; font-size: 22px; color: var(--main); cursor: pointer; }
+
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 12px; background: #0f141a; }
+        .stat-box { background: var(--card); border: 1px solid #333; padding: 12px; border-radius: 12px; text-align: center; }
+        .stat-box h4 { margin: 0; font-size: 11px; color: #888; }
+        .stat-box p { margin: 5px 0 0 0; font-size: 16px; font-weight: bold; color: var(--main); }
+
+        .tabs { display: flex; gap: 5px; padding: 10px; overflow-x: auto; background: #000; scrollbar-width: none; }
+        .tab-btn { padding: 10px 15px; border: none; background: #1c242b; color: white; border-radius: 8px; cursor: pointer; white-space: nowrap; font-size: 12px; font-family: 'Cairo'; }
+        .tab-btn.active { background: var(--main); color: #000; font-weight: bold; }
+
+        .container { padding: 15px; padding-bottom: 120px; }
+        .view { display: none; } .view.active { display: block; }
+
+        .input-card { background: var(--card); padding: 15px; border-radius: 12px; margin-bottom: 15px; border-right: 4px solid var(--main); }
+        input, select { width: 100%; padding: 12px; margin: 6px 0; background: #2d3436; border: 1px solid #444; color: white; border-radius: 8px; text-align: center; font-family: 'Cairo'; font-size: 14px; outline: none; }
+        
+        .save-btn { width: 100%; padding: 15px; background: var(--main); border: none; border-radius: 10px; font-weight: bold; color: #000; cursor: pointer; font-size: 16px; font-family: 'Cairo'; }
+
+        table { width: 100%; border-collapse: collapse; background: #11181e; border-radius: 10px; overflow: hidden; margin-top: 10px; }
+        th { background: #1c242b; color: var(--main); padding: 10px; font-size: 11px; }
+        td { padding: 10px; border-bottom: 1px solid #1e272e; font-size: 12px; text-align: center; position: relative; }
+
+        .status-badge { padding: 4px 8px; border-radius: 6px; font-size: 10px; cursor: pointer; font-weight: bold; }
+        .waiting { background: var(--warning); color: #000; }
+        .done { background: var(--success); color: #fff; }
+
+        /* تنسيق التاريخ والوقت */
+        .date-time { font-size: 9px; color: #636e72; display: block; margin-top: 4px; direction: ltr; }
+
+        footer { position: fixed; bottom: 0; width: 100%; background: #161d24; text-align: center; padding: 10px; border-top: 2px solid var(--main); color: var(--main); font-weight: bold; font-size: 11px; z-index: 100; }
+    </style>
+</head>
+<body onload="initSystem()">
+
+    <div id="splash">
+        <div class="logo-pulse">NAMBAR 1</div>
+        <p style="color: #666; margin-top: 10px;">أصل الصيانة - م/ وليد فضيل</p>
+    </div>
+
+    <div id="login-screen">
+        <div class="login-card">
+            <h2 style="color: var(--main);">دخول النظام</h2>
+            <input type="text" id="userIn" placeholder="اسم المستخدم">
+            <input type="password" id="passIn" placeholder="كلمة المرور">
+            <button class="save-btn" onclick="checkLogin()">دخول ✅</button>
+            <p style="color:#333; font-size:10px; margin-top:15px;">nambar1 / 1234</p>
+        </div>
+    </div>
+
+    <div id="main-app">
+        <header>
+            <button class="priv-btn" onclick="togPriv()">👁️</button>
+            <h2 style="margin:0; color:var(--main);">NAMBAR 1</h2>
+        </header>
+
+        <div class="stats-grid">
+            <div class="stat-box"><h4>أرباح كاش</h4><p id="v_cProf">****</p></div>
+            <div class="stat-box"><h4>الدرج</h4><p id="v_drw">****</p></div>
+            <div class="stat-box" style="border-color:var(--success)"><h4>الصافي</h4><p id="v_net" style="color:var(--success)">****</p></div>
+            <div class="stat-box"><h4>المصاريف</h4><p id="v_exp" style="color:var(--danger)">****</p></div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="tab(event, 'v_r')">صيانة</button>
+            <button class="tab-btn" onclick="tab(event, 'v_s')">سوفت</button>
+            <button class="tab-btn" onclick="tab(event, 'v_a')">اكسسوار</button>
+            <button class="tab-btn" onclick="tab(event, 'v_w')">فودافون كاش</button>
+            <button class="tab-btn" onclick="tab(event, 'v_e')" style="color:var(--danger)">مصروفات</button>
+        </div>
+
+        <div class="container">
+            <div id="v_r" class="view active">
+                <div class="input-card">
+                    <input type="text" id="rN" placeholder="اسم العميل">
+                    <input type="text" id="rD" placeholder="الجهاز والعطل">
+                    <input type="number" id="rC" placeholder="التكلفة علينا">
+                    <input type="number" id="rP" placeholder="السعر للزبون">
+                    <input type="number" id="rW" placeholder="الواصل">
+                    <button class="save-btn" onclick="add('r')">حفظ صيانة</button>
+                </div>
+                <table><thead><tr><th>العميل</th><th>الحساب</th><th>الحالة/الوقت</th><th>🗑️</th></tr></thead><tbody id="bR"></tbody></table>
+            </div>
+
+            <div id="v_s" class="view"><div class="input-card"><input type="text" id="sN" placeholder="اسم العميل"><input type="number" id="sP" placeholder="السعر"><button class="save-btn" onclick="add('s')">حفظ سوفت</button></div><table><tbody id="bS"></tbody></table></div>
+            
+            <div id="v_a" class="view"><div class="input-card"><input type="text" id="aI" placeholder="الصنف"><input type="number" id="aC" placeholder="جملة"><input type="number" id="aP" placeholder="بيع"><button class="save-btn" onclick="add('a')">حفظ بيع</button></div><table><tbody id="bA"></tbody></table></div>
+            
+            <div id="v_w" class="view"><div class="input-card"><select id="wT"><option value="سحب">سحب</option><option value="إيداع">إيداع</option></select><input type="number" id="wA" placeholder="المبلغ"><input type="number" id="wF" placeholder="العمولة"><button class="save-btn" onclick="add('w')">حفظ كاش</button></div><table><tbody id="bW"></tbody></table></div>
+            
+            <div id="v_e" class="view"><div class="input-card"><input type="text" id="eD" placeholder="البيان"><input type="number" id="eA" placeholder="المبلغ"><button class="save-btn" onclick="add('e')">حفظ مصروف</button></div><table><tbody id="bE"></tbody></table></div>
+        </div>
+
+        <footer>NAMBAR 1 - M/Youssef Mohammed 📌 01018240374</footer>
+    </div>
+
+<script>
+    const STORAGE_KEY = 'n1_master_v3';
+    let isPrivate = true;
+
+    function initSystem() { setTimeout(() => { document.getElementById('splash').style.display='none'; document.getElementById('login-screen').style.display='flex'; }, 2000); }
+
+    function checkLogin() {
+        const u = document.getElementById('userIn').value.toLowerCase().trim();
+        const p = document.getElementById('passIn').value.trim();
+        if(u === 'nambar1' && p === '1234') {
+            document.getElementById('login-screen').style.display='none';
+            document.getElementById('main-app').style.display='block';
+            render();
+        } else { alert('بيانات الدخول خطأ!'); }
+    }
+
+    function togPriv() { isPrivate = !isPrivate; render(); }
+    
+    function tab(e, id) {
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(id).classList.add('active'); e.currentTarget.classList.add('active');
+    }
+
+    function add(t) {
+        let db = JSON.parse(localStorage.getItem(STORAGE_KEY)) || { r:[], s:[], a:[], e:[], w:[] };
+        // ميزة التاريخ والوقت بالظبط
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+        const dateStr = now.toLocaleDateString('ar-EG');
+        const fullDate = `${dateStr} | ${timeStr}`;
+
+        if(t==='r') db.r.push({ n: document.getElementById('rN').value, d: document.getElementById('rD').value, c: parseFloat(document.getElementById('rC').value)||0, p: parseFloat(document.getElementById('rP').value)||0, w: parseFloat(document.getElementById('rW').value)||0, st: 'تصليح ⏳', dt: fullDate });
+        if(t==='s') db.s.push({ n: document.getElementById('sN').value, p: parseFloat(document.getElementById('sP').value)||0, dt: fullDate });
+        if(t==='a') db.a.push({ i: document.getElementById('aI').value, c: parseFloat(document.getElementById('aC').value)||0, p: parseFloat(document.getElementById('aP').value)||0, dt: fullDate });
+        if(t==='w') db.w.push({ t: document.getElementById('wT').value, a: parseFloat(document.getElementById('wA').value)||0, f: parseFloat(document.getElementById('wF').value)||0, dt: fullDate });
+        if(t==='e') db.e.push({ d: document.getElementById('eD').value, a: parseFloat(document.getElementById('eA').value)||0, dt: fullDate });
+
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); render();
+        document.querySelectorAll('input').forEach(i => i.value = '');
+    }
+
+    function render() {
+        let db = JSON.parse(localStorage.getItem(STORAGE_KEY)) || { r:[], s:[], a:[], e:[], w:[] };
+        let drw=0, prf=0, exp=0, cpf=0;
+
+        const ui = (id, data, fn) => { 
+            const b = document.getElementById(id); b.innerHTML = ''; 
+            data.forEach((item, idx) => b.innerHTML += fn(item, idx)); 
+        };
+
+        ui('bR', db.r, (i, idx) => {
+            drw += i.w; prf += (i.w - i.c);
+            return `<tr><td>${i.n}<br><small>${i.d}</small></td><td>${i.p}<br><small>باقي:${i.p-i.w}</small></td><td><span class="status-badge ${i.st.includes('تم')?'done':'waiting'}" onclick="togSt(${idx})">${i.st}</span><span class="date-time">${i.dt}</span></td><td><span onclick="del('r',${idx})">🗑️</span></td></tr>`;
+        });
+
+        ui('bS', db.s, (i, idx) => {
+            drw += i.p; prf += i.p;
+            return `<tr><td>${i.n}<span class="date-time">${i.dt}</span></td><td>${i.p}</td><td>---</td><td><span onclick="del('s',${idx})">🗑️</span></td></tr>`;
+        });
+
+        ui('bA', db.a, (i, idx) => {
+            drw += i.p; prf += (i.p - i.c);
+            return `<tr><td>${i.i}<span class="date-time">${i.dt}</span></td><td>${i.p}</td><td>---</td><td><span onclick="del('a',${idx})">🗑️</span></td></tr>`;
+        });
+
+        ui('bW', db.w, (i, idx) => {
+            drw += (i.t==='سحب'?i.a:-i.a)+i.f; cpf += i.f;
+            return `<tr><td>${i.t}<span class="date-time">${i.dt}</span></td><td>${i.a}</td><td>+${i.f}</td><td><span onclick="del('w',${idx})">🗑️</span></td></tr>`;
+        });
+
+        ui('bE', db.e, (i, idx) => {
+            drw -= i.a; exp += i.a;
+            return `<tr><td>${i.d}<span class="date-time">${i.dt}</span></td><td>${i.a}</td><td>---</td><td><span onclick="del('e',${idx})">🗑️</span></td></tr>`;
+        });
+
+        const fmt = (v) => isPrivate ? "****" : v.toFixed(2) + " ج";
+        document.getElementById('v_drw').innerText = fmt(drw);
+        document.getElementById('v_cProf').innerText = fmt(cpf);
+        document.getElementById('v_exp').innerText = fmt(exp);
+        document.getElementById('v_net').innerText = fmt(prf + cpf - exp);
+    }
+
+    function togSt(idx) {
+        let db = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        if(!db.r[idx].st.includes('تم')) { db.r[idx].st = 'تم التسليم ✅'; db.r[idx].w = db.r[idx].p; }
+        else { db.r[idx].st = 'تصليح ⏳'; }
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); render();
+    }
+
+    function del(t, idx) { if(confirm('حذف؟')) { let db = JSON.parse(localStorage.getItem(STORAGE_KEY)); db[t].splice(idx,1); localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); render(); } }
+</script>
+</body>
+</html>
