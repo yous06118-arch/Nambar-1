@@ -3,243 +3,223 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Nambar 1 - Safe Edition</title>
+    <title>NAMBAR 1 - Pro System v3.0</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
-        :root { --main: #00d2d3; --bg: #0a0e12; --card: #161d24; --text: #ffffff; --danger: #ff4757; --success: #05c46b; }
-        body { font-family: 'Cairo', sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding-bottom: 110px; overflow-x: hidden; }
+        @font-face { font-family: 'Cairo'; src: local('Arial'); }
+        :root { --main: #00d2d3; --bg: #0a0e12; --card: #161d24; --text: #ffffff; --danger: #ff4757; --success: #05c46b; --warning: #f1c40f; }
+        * { box-sizing: border-box; }
+        body { font-family: 'Cairo', sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 0; overflow-x: hidden; }
+
+        /* 1. واجهة ترحيبية */
+        #splash {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; z-index: 10000;
+        }
+        .logo-pulse { font-size: 50px; color: var(--main); font-weight: bold; animation: pulse 2s infinite; text-align: center; }
+        @keyframes pulse { 0%, 100% { transform: scale(0.9); opacity: 0.7; } 50% { transform: scale(1); opacity: 1; } }
+
+        /* 2. واجهة الدخول */
+        #login-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg); display: none; justify-content: center; align-items: center; z-index: 9000;
+        }
+        .login-card {
+            background: var(--card); padding: 30px; border-radius: 20px;
+            border: 2px solid var(--main); width: 90%; max-width: 350px; text-align: center;
+        }
+        .login-card input { width: 100%; padding: 15px; margin: 10px 0; background: #1c242b; border: 1px solid #444; color: #fff; border-radius: 12px; text-align: center; font-size: 16px; outline: none; }
+
+        /* 3. واجهة البرنامج الرئيسية */
+        #main-app { display: none; }
+        header { background: var(--card); padding: 15px; text-align: center; border-bottom: 3px solid var(--main); position: relative; }
+        .priv-btn { position: absolute; left: 15px; top: 18px; background: none; border: none; font-size: 22px; color: var(--main); cursor: pointer; }
+
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 12px; background: #0f141a; }
+        .stat-box { background: var(--card); border: 1px solid #333; padding: 12px; border-radius: 12px; text-align: center; }
+        .stat-box h4 { margin: 0; font-size: 11px; color: #888; }
+        .stat-box p { margin: 5px 0 0 0; font-size: 16px; font-weight: bold; color: var(--main); }
+
+        .tabs { display: flex; gap: 5px; padding: 10px; overflow-x: auto; background: #000; scrollbar-width: none; }
+        .tab-btn { padding: 10px 15px; border: none; background: #1c242b; color: white; border-radius: 8px; cursor: pointer; white-space: nowrap; font-size: 12px; font-family: 'Cairo'; }
+        .tab-btn.active { background: var(--main); color: #000; font-weight: bold; }
+
+        .container { padding: 15px; padding-bottom: 120px; }
+        .view { display: none; } .view.active { display: block; }
+
+        .input-card { background: var(--card); padding: 15px; border-radius: 12px; margin-bottom: 15px; border-right: 4px solid var(--main); }
+        input, select { width: 100%; padding: 12px; margin: 6px 0; background: #2d3436; border: 1px solid #444; color: white; border-radius: 8px; text-align: center; font-family: 'Cairo'; font-size: 14px; outline: none; }
         
-        header { background: var(--card); padding: 15px; text-align: center; border-bottom: 3px solid var(--main); }
-        .stats-bar { background: #1e272e; padding: 12px; text-align: center; color: var(--main); display: flex; justify-content: space-around; font-size: 13px; font-weight: bold; }
-        
-        /* صندوق الأرباح مع زرار الإظهار */
-        .profit-box { background: var(--card); margin: 10px 15px; padding: 15px; border-radius: 12px; border: 2px solid var(--main); text-align: center; position: relative; }
-        .toggle-btn { background: var(--main); color: #000; border: none; padding: 5px 15px; border-radius: 8px; font-family: 'Cairo'; font-weight: bold; cursor: pointer; font-size: 12px; margin-top: 8px; }
-        
-        .tabs { display: flex; gap: 5px; padding: 10px; }
-        .tab-btn { flex: 1; padding: 12px; border: none; background: #222; color: white; border-radius: 10px; font-weight: bold; font-family: 'Cairo'; cursor: pointer; }
-        .tab-btn.active { background: var(--main); color: #000; }
-        
-        .container { padding: 0 15px; }
-        .content { display: none; }
-        .content.active { display: block; }
-        
-        .input-card { background: var(--card); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #333; }
-        input { width: 100%; padding: 12px; margin: 6px 0; background: #2d3436; border: 1px solid #444; color: white; border-radius: 8px; box-sizing: border-box; font-family: 'Cairo'; outline: none; }
-        
-        .calc-row { display: flex; gap: 10px; }
-        .add-btn { width: 100%; padding: 14px; background: var(--main); border: none; border-radius: 8px; font-weight: bold; font-size: 16px; font-family: 'Cairo'; cursor: pointer; margin-top: 5px; }
-        
-        .table-container { background: var(--card); border-radius: 12px; overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; min-width: 450px; }
-        th { background: #222; padding: 10px; text-align: right; color: var(--main); font-size: 11px; }
-        td { padding: 10px; border-bottom: 1px solid #333; font-size: 12px; }
-        
-        .status { padding: 4px 7px; border-radius: 5px; font-size: 10px; background: #333; cursor: pointer; }
-        .done { background: var(--success); color: white; }
-        .rem-tag { color: var(--danger); font-weight: bold; cursor: pointer; border: 1px dashed var(--danger); padding: 2px 4px; border-radius: 4px; }
-        
-        footer { position: fixed; bottom: 0; width: 100%; background: #161d24; text-align: center; padding: 12px 0; border-top: 1px solid #333; }
+        .save-btn { width: 100%; padding: 15px; background: var(--main); border: none; border-radius: 10px; font-weight: bold; color: #000; cursor: pointer; font-size: 16px; font-family: 'Cairo'; }
+
+        table { width: 100%; border-collapse: collapse; background: #11181e; border-radius: 10px; overflow: hidden; margin-top: 10px; }
+        th { background: #1c242b; color: var(--main); padding: 10px; font-size: 11px; }
+        td { padding: 10px; border-bottom: 1px solid #1e272e; font-size: 12px; text-align: center; position: relative; }
+
+        .status-badge { padding: 4px 8px; border-radius: 6px; font-size: 10px; cursor: pointer; font-weight: bold; }
+        .waiting { background: var(--warning); color: #000; }
+        .done { background: var(--success); color: #fff; }
+
+        /* تنسيق التاريخ والوقت */
+        .date-time { font-size: 9px; color: #636e72; display: block; margin-top: 4px; direction: ltr; }
+
+        footer { position: fixed; bottom: 0; width: 100%; background: #161d24; text-align: center; padding: 10px; border-top: 2px solid var(--main); color: var(--main); font-weight: bold; font-size: 11px; z-index: 100; }
     </style>
 </head>
-<body onload="loadData()">
+<body onload="initSystem()">
 
-<header>
-    <h2 style="margin:0; color:var(--main);">NAMBAR 1</h2>
-    <div style="font-size: 11px; color: #888;">أصل الصيانة - م/ وليد فضيل</div>
-</header>
+    <div id="splash">
+        <div class="logo-pulse">NAMBAR 1</div>
+        <p style="color: #666; margin-top: 10px;">أصل الصيانة - م/ وليد فضيل</p>
+    </div>
 
-<div class="stats-bar">
-    <div>الدرج: <span id="cashInDrawer" style="color:var(--success)">0</span></div>
-    <div>العمليات: <span id="totalOps">0</span></div>
-</div>
+    <div id="login-screen">
+        <div class="login-card">
+            <h2 style="color: var(--main);">دخول النظام</h2>
+            <input type="text" id="userIn" placeholder="اسم المستخدم">
+            <input type="password" id="passIn" placeholder="كلمة المرور">
+            <button class="save-btn" onclick="checkLogin()">دخول ✅</button>
+            <p style="color:#333; font-size:10px; margin-top:15px;">nambar1 / 1234</p>
+        </div>
+    </div>
 
-<div class="profit-box">
-    <div style="font-weight: bold; margin-bottom: 5px;">صافي الأرباح 💸</div>
-    <div id="totalProfitValue" style="font-size: 24px; color: var(--success); font-weight: bold;">****</div>
-    <button id="toggleBtn" class="toggle-btn" onclick="toggleProfit()">عرض الأرباح</button>
-</div>
+    <div id="main-app">
+        <header>
+            <button class="priv-btn" onclick="togPriv()">👁️</button>
+            <h2 style="margin:0; color:var(--main);">NAMBAR 1</h2>
+        </header>
 
-<div class="tabs">
-    <button class="tab-btn active" onclick="switchTab(event, 'mTab')">صيانة</button>
-    <button class="tab-btn" onclick="switchTab(event, 'sTab')">سوفت وير</button>
-    <button class="tab-btn" onclick="switchTab(event, 'aTab')">اكسسوارات</button>
-</div>
+        <div class="stats-grid">
+            <div class="stat-box"><h4>أرباح كاش</h4><p id="v_cProf">****</p></div>
+            <div class="stat-box"><h4>الدرج</h4><p id="v_drw">****</p></div>
+            <div class="stat-box" style="border-color:var(--success)"><h4>الصافي</h4><p id="v_net" style="color:var(--success)">****</p></div>
+            <div class="stat-box"><h4>المصاريف</h4><p id="v_exp" style="color:var(--danger)">****</p></div>
+        </div>
 
-<div class="container">
-    <div id="mTab" class="content active">
-        <div class="input-card">
-            <input type="text" id="mCust" placeholder="اسم العميل">
-            <input type="text" id="mDev" placeholder="الجهاز والعطل">
-            <input type="number" id="mCost" placeholder="تكلفة قطعة الغيار">
-            <input type="number" id="mPrice" oninput="calcM()" placeholder="إجمالي الحساب">
-            <div class="calc-row">
-                <input type="number" id="mPaid" oninput="calcM()" placeholder="الواصل الآن">
-                <input type="number" id="mRem" placeholder="الباقي" readonly style="background:#111; color:var(--danger)">
+        <div class="tabs">
+            <button class="tab-btn active" onclick="tab(event, 'v_r')">صيانة</button>
+            <button class="tab-btn" onclick="tab(event, 'v_s')">سوفت</button>
+            <button class="tab-btn" onclick="tab(event, 'v_a')">اكسسوار</button>
+            <button class="tab-btn" onclick="tab(event, 'v_w')">فودافون كاش</button>
+            <button class="tab-btn" onclick="tab(event, 'v_e')" style="color:var(--danger)">مصروفات</button>
+        </div>
+
+        <div class="container">
+            <div id="v_r" class="view active">
+                <div class="input-card">
+                    <input type="text" id="rN" placeholder="اسم العميل">
+                    <input type="text" id="rD" placeholder="الجهاز والعطل">
+                    <input type="number" id="rC" placeholder="التكلفة علينا">
+                    <input type="number" id="rP" placeholder="السعر للزبون">
+                    <input type="number" id="rW" placeholder="الواصل">
+                    <button class="save-btn" onclick="add('r')">حفظ صيانة</button>
+                </div>
+                <table><thead><tr><th>العميل</th><th>الحساب</th><th>الحالة/الوقت</th><th>🗑️</th></tr></thead><tbody id="bR"></tbody></table>
             </div>
-            <button class="add-btn" onclick="saveData('m')">حفظ العملية ✅</button>
-        </div>
-        <div class="table-container">
-            <table>
-                <thead><tr><th>العميل</th><th>الجهاز</th><th>الحساب</th><th>الحالة</th><th>🗑️</th></tr></thead>
-                <tbody id="mBody"></tbody>
-            </table>
-        </div>
-    </div>
 
-    <div id="sTab" class="content">
-        <div class="input-card">
-            <input type="text" id="sCust" placeholder="العميل"><input type="text" id="sOp" placeholder="العملية"><input type="number" id="sPrice" placeholder="السعر">
-            <button class="add-btn" style="background:#3498db" onclick="saveData('s')">حفظ سوفت 💻</button>
+            <div id="v_s" class="view"><div class="input-card"><input type="text" id="sN" placeholder="اسم العميل"><input type="number" id="sP" placeholder="السعر"><button class="save-btn" onclick="add('s')">حفظ سوفت</button></div><table><tbody id="bS"></tbody></table></div>
+            
+            <div id="v_a" class="view"><div class="input-card"><input type="text" id="aI" placeholder="الصنف"><input type="number" id="aC" placeholder="جملة"><input type="number" id="aP" placeholder="بيع"><button class="save-btn" onclick="add('a')">حفظ بيع</button></div><table><tbody id="bA"></tbody></table></div>
+            
+            <div id="v_w" class="view"><div class="input-card"><select id="wT"><option value="سحب">سحب</option><option value="إيداع">إيداع</option></select><input type="number" id="wA" placeholder="المبلغ"><input type="number" id="wF" placeholder="العمولة"><button class="save-btn" onclick="add('w')">حفظ كاش</button></div><table><tbody id="bW"></tbody></table></div>
+            
+            <div id="v_e" class="view"><div class="input-card"><input type="text" id="eD" placeholder="البيان"><input type="number" id="eA" placeholder="المبلغ"><button class="save-btn" onclick="add('e')">حفظ مصروف</button></div><table><tbody id="bE"></tbody></table></div>
         </div>
-        <div class="table-container"><table id="sTable"><thead><tr><th>العميل</th><th>الخدمة</th><th>السعر</th><th>🗑️</th></tr></thead><tbody id="sBody"></tbody></table></div>
-    </div>
 
-    <div id="aTab" class="content">
-        <div class="input-card">
-            <input type="text" id="aItem" placeholder="الصنف"><input type="number" id="aCost" placeholder="سعر الجملة"><input type="number" id="aPrice" placeholder="سعر البيع">
-            <button class="add-btn" style="background:#05c46b" onclick="saveData('a')">تسجيل بيع 💰</button>
-        </div>
-        <div class="table-container"><table id="aTable"><thead><tr><th>الصنف</th><th>السعر</th><th>🗑️</th></tr></thead><tbody id="aBody"></tbody></table></div>
+        <footer>NAMBAR 1 - M/Youssef Mohammed 📌 01018240374</footer>
     </div>
-</div>
-
-<footer>
-    <div style="color:var(--main); font-weight:bold;">M/Youssef Mohammed</div>
-    <div style="color:#888; font-size:12px;">01018240374</div>
-</footer>
 
 <script>
-    const DB_KEY = 'n1_safe_v9';
-    let isVisible = false; // حالة الأرباح (مخفية)
-    let currentProfit = 0;
+    const STORAGE_KEY = 'n1_master_v3';
+    let isPrivate = true;
 
-    function toggleProfit() {
-        const pValue = document.getElementById('totalProfitValue');
-        const btn = document.getElementById('toggleBtn');
-        isVisible = !isVisible;
-        
-        if(isVisible) {
-            pValue.innerText = currentProfit.toLocaleString() + " ج.م";
-            btn.innerText = "إخفاء الأرباح";
-        } else {
-            pValue.innerText = "****";
-            btn.innerText = "عرض الأرباح";
-        }
+    function initSystem() { setTimeout(() => { document.getElementById('splash').style.display='none'; document.getElementById('login-screen').style.display='flex'; }, 2000); }
+
+    function checkLogin() {
+        const u = document.getElementById('userIn').value.toLowerCase().trim();
+        const p = document.getElementById('passIn').value.trim();
+        if(u === 'nambar1' && p === '1234') {
+            document.getElementById('login-screen').style.display='none';
+            document.getElementById('main-app').style.display='block';
+            render();
+        } else { alert('بيانات الدخول خطأ!'); }
     }
 
-    function calcM() {
-        const price = parseFloat(document.getElementById('mPrice').value) || 0;
-        const paid = parseFloat(document.getElementById('mPaid').value) || 0;
-        document.getElementById('mRem').value = price - paid;
+    function togPriv() { isPrivate = !isPrivate; render(); }
+    
+    function tab(e, id) {
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(id).classList.add('active'); e.currentTarget.classList.add('active');
     }
 
-    function switchTab(evt, name) {
-        document.querySelectorAll(".content").forEach(c => c.classList.remove("active"));
-        document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-        document.getElementById(name).classList.add("active");
-        evt.currentTarget.classList.add("active");
-    }
+    function add(t) {
+        let db = JSON.parse(localStorage.getItem(STORAGE_KEY)) || { r:[], s:[], a:[], e:[], w:[] };
+        // ميزة التاريخ والوقت بالظبط
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+        const dateStr = now.toLocaleDateString('ar-EG');
+        const fullDate = `${dateStr} | ${timeStr}`;
 
-    function saveData(type) {
-        let db = JSON.parse(localStorage.getItem(DB_KEY)) || { m: [], s: [], a: [] };
-        const date = new Date().toLocaleDateString('ar-EG');
+        if(t==='r') db.r.push({ n: document.getElementById('rN').value, d: document.getElementById('rD').value, c: parseFloat(document.getElementById('rC').value)||0, p: parseFloat(document.getElementById('rP').value)||0, w: parseFloat(document.getElementById('rW').value)||0, st: 'تصليح ⏳', dt: fullDate });
+        if(t==='s') db.s.push({ n: document.getElementById('sN').value, p: parseFloat(document.getElementById('sP').value)||0, dt: fullDate });
+        if(t==='a') db.a.push({ i: document.getElementById('aI').value, c: parseFloat(document.getElementById('aC').value)||0, p: parseFloat(document.getElementById('aP').value)||0, dt: fullDate });
+        if(t==='w') db.w.push({ t: document.getElementById('wT').value, a: parseFloat(document.getElementById('wA').value)||0, f: parseFloat(document.getElementById('wF').value)||0, dt: fullDate });
+        if(t==='e') db.e.push({ d: document.getElementById('eD').value, a: parseFloat(document.getElementById('eA').value)||0, dt: fullDate });
 
-        if(type === 'm') {
-            const p = parseFloat(document.getElementById('mPrice').value) || 0;
-            const c = parseFloat(document.getElementById('mCost').value) || 0;
-            const paid = parseFloat(document.getElementById('mPaid').value) || 0;
-            db.m.push({ name: document.getElementById('mCust').value, dev: document.getElementById('mDev').value, price: p, cost: c, paid: paid, rem: p - paid, status: (p-paid===0)?'تم ✅':'تصليح ⏳', date: date });
-        } else if(type === 's') {
-            const p = parseFloat(document.getElementById('sPrice').value) || 0;
-            db.s.push({ name: document.getElementById('sCust').value, op: document.getElementById('sOp').value, price: p, date: date });
-        } else if(type === 'a') {
-            const p = parseFloat(document.getElementById('aPrice').value) || 0;
-            const c = parseFloat(document.getElementById('aCost').value) || 0;
-            db.a.push({ item: document.getElementById('aItem').value, price: p, cost: c, date: date });
-        }
-        localStorage.setItem(DB_KEY, JSON.stringify(db));
-        loadData();
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); render();
         document.querySelectorAll('input').forEach(i => i.value = '');
     }
 
-    function settle(idx) {
-        let db = JSON.parse(localStorage.getItem(DB_KEY));
-        let item = db.m[idx];
-        if(item.rem > 0) {
-            if(confirm(`استلمت باقي الحساب (${item.rem} ج.م)؟`)) {
-                item.paid += item.rem;
-                item.rem = 0;
-                item.status = 'تم ✅';
-                localStorage.setItem(DB_KEY, JSON.stringify(db));
-                loadData();
-            }
-        }
-    }
+    function render() {
+        let db = JSON.parse(localStorage.getItem(STORAGE_KEY)) || { r:[], s:[], a:[], e:[], w:[] };
+        let drw=0, prf=0, exp=0, cpf=0;
 
-    function loadData() {
-        let db = JSON.parse(localStorage.getItem(DB_KEY)) || { m: [], s: [], a: [] };
-        let drawer = 0; 
-        currentProfit = 0; // تصفير الربح لإعادة الحساب
+        const ui = (id, data, fn) => { 
+            const b = document.getElementById(id); b.innerHTML = ''; 
+            data.forEach((item, idx) => b.innerHTML += fn(item, idx)); 
+        };
 
-        // تفريغ الجداول قبل التحميل
-        document.getElementById('mBody').innerHTML = '';
-        document.getElementById('sBody').innerHTML = '';
-        document.getElementById('aBody').innerHTML = '';
-
-        // صيانة
-        db.m.forEach((i, idx) => {
-            document.getElementById('mBody').innerHTML += `<tr>
-                <td>${i.name}<br><small>${i.date}</small></td>
-                <td>${i.dev}</td>
-                <td>
-                    <b>${i.price}</b><br>
-                    <small style="color:var(--success)">كاش: ${i.paid}</small><br>
-                    ${i.rem > 0 ? `<span class="rem-tag" onclick="settle(${idx})">باقي: ${i.rem}</span>` : '<small style="color:var(--success)">خالص</small>'}
-                </td>
-                <td><span class="status ${i.status.includes('تم')?'done':''}" onclick="toggleS(${idx})">${i.status}</span></td>
-                <td><button onclick="del('m',${idx})" style="background:none; border:none; color:var(--danger)">🗑️</button></td>
-            </tr>`;
-            drawer += i.paid;
-            currentProfit += (i.paid - i.cost);
+        ui('bR', db.r, (i, idx) => {
+            drw += i.w; prf += (i.w - i.c);
+            return `<tr><td>${i.n}<br><small>${i.d}</small></td><td>${i.p}<br><small>باقي:${i.p-i.w}</small></td><td><span class="status-badge ${i.st.includes('تم')?'done':'waiting'}" onclick="togSt(${idx})">${i.st}</span><span class="date-time">${i.dt}</span></td><td><span onclick="del('r',${idx})">🗑️</span></td></tr>`;
         });
 
-        // سوفت
-        db.s.forEach((i, idx) => {
-            document.getElementById('sBody').innerHTML += `<tr><td>${i.name}</td><td>${i.op}</td><td>${i.price}</td><td><button onclick="del('s',${idx})" style="background:none; border:none; color:var(--danger)">🗑️</button></td></tr>`;
-            drawer += i.price; currentProfit += i.price;
+        ui('bS', db.s, (i, idx) => {
+            drw += i.p; prf += i.p;
+            return `<tr><td>${i.n}<span class="date-time">${i.dt}</span></td><td>${i.p}</td><td>---</td><td><span onclick="del('s',${idx})">🗑️</span></td></tr>`;
         });
 
-        // اكسسوارات
-        db.a.forEach((i, idx) => {
-            document.getElementById('aBody').innerHTML += `<tr><td>${i.item}</td><td>${i.price}</td><td><button onclick="del('a',${idx})" style="background:none; border:none; color:var(--danger)">🗑️</button></td></tr>`;
-            drawer += i.price; currentProfit += (i.price - i.cost);
+        ui('bA', db.a, (i, idx) => {
+            drw += i.p; prf += (i.p - i.c);
+            return `<tr><td>${i.i}<span class="date-time">${i.dt}</span></td><td>${i.p}</td><td>---</td><td><span onclick="del('a',${idx})">🗑️</span></td></tr>`;
         });
 
-        document.getElementById('cashInDrawer').innerText = drawer.toLocaleString() + " ج.م";
-        document.getElementById('totalOps').innerText = db.m.length + db.s.length + db.a.length;
-        
-        // تحديث الرقم في الخلفية لكن لا يظهر إلا لوisVisible True
-        if(isVisible) {
-            document.getElementById('totalProfitValue').innerText = currentProfit.toLocaleString() + " ج.م";
-        }
+        ui('bW', db.w, (i, idx) => {
+            drw += (i.t==='سحب'?i.a:-i.a)+i.f; cpf += i.f;
+            return `<tr><td>${i.t}<span class="date-time">${i.dt}</span></td><td>${i.a}</td><td>+${i.f}</td><td><span onclick="del('w',${idx})">🗑️</span></td></tr>`;
+        });
+
+        ui('bE', db.e, (i, idx) => {
+            drw -= i.a; exp += i.a;
+            return `<tr><td>${i.d}<span class="date-time">${i.dt}</span></td><td>${i.a}</td><td>---</td><td><span onclick="del('e',${idx})">🗑️</span></td></tr>`;
+        });
+
+        const fmt = (v) => isPrivate ? "****" : v.toFixed(2) + " ج";
+        document.getElementById('v_drw').innerText = fmt(drw);
+        document.getElementById('v_cProf').innerText = fmt(cpf);
+        document.getElementById('v_exp').innerText = fmt(exp);
+        document.getElementById('v_net').innerText = fmt(prf + cpf - exp);
     }
 
-    function toggleS(idx) {
-        let db = JSON.parse(localStorage.getItem(DB_KEY));
-        db.m[idx].status = db.m[idx].status.includes('تم') ? 'تصليح ⏳' : 'تم ✅';
-        localStorage.setItem(DB_KEY, JSON.stringify(db));
-        loadData();
+    function togSt(idx) {
+        let db = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        if(!db.r[idx].st.includes('تم')) { db.r[idx].st = 'تم التسليم ✅'; db.r[idx].w = db.r[idx].p; }
+        else { db.r[idx].st = 'تصليح ⏳'; }
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); render();
     }
 
-    function del(t, idx) {
-        if(confirm("حذف؟")) {
-            let db = JSON.parse(localStorage.getItem(DB_KEY));
-            db[t].splice(idx, 1);
-            localStorage.setItem(DB_KEY, JSON.stringify(db));
-            loadData();
-        }
-    }
+    function del(t, idx) { if(confirm('حذف؟')) { let db = JSON.parse(localStorage.getItem(STORAGE_KEY)); db[t].splice(idx,1); localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); render(); } }
 </script>
 </body>
 </html>
