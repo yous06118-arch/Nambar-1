@@ -13,12 +13,13 @@
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
 
         :root {
-            --main: #00d2d3; /* لون لبني عصري */
+            --main: #00d2d3; 
             --bg: #0a0e12;
             --card: #161d24;
             --text: #ffffff;
             --danger: #ff4757;
             --success: #05c46b;
+            --info: #3498db;
         }
 
         body {
@@ -31,69 +32,37 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* --- شاشة الترحيب (Splash Screen) --- */
+        /* --- شاشة الترحيب --- */
         #splash-screen {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: #000;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 10000;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; z-index: 10000;
             transition: 0.6s ease-in-out;
         }
 
-        .splash-logo {
-            font-size: 3.5rem;
-            color: var(--main);
-            font-weight: bold;
-            letter-spacing: 3px;
-            text-shadow: 0 0 20px rgba(0, 210, 211, 0.5);
-            animation: pulse 1.5s infinite;
-        }
-
+        .splash-logo { font-size: 3.5rem; color: var(--main); font-weight: bold; letter-spacing: 3px; text-shadow: 0 0 20px rgba(0, 210, 211, 0.5); animation: pulse 1.5s infinite; }
         .dev-tag { color: #555; font-size: 14px; margin-top: 10px; font-weight: bold; letter-spacing: 2px; }
-
-        .loader {
-            width: 45px; height: 45px;
-            border: 4px solid #111;
-            border-top: 4px solid var(--main);
-            border-radius: 50%;
-            margin-top: 30px;
-            animation: spin 1s linear infinite;
-        }
+        .loader { width: 45px; height: 45px; border: 4px solid #111; border-top: 4px solid var(--main); border-radius: 50%; margin-top: 30px; animation: spin 1s linear infinite; }
 
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         @keyframes pulse { 0% { transform: scale(0.95); opacity: 0.7; } 50% { transform: scale(1); opacity: 1; } 100% { transform: scale(0.95); opacity: 0.7; } }
 
-        /* --- الواجهة الرئيسية --- */
-        header {
-            background: var(--card);
-            padding: 20px;
-            text-align: center;
-            border-bottom: 3px solid var(--main);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-        }
+        header { background: var(--card); padding: 20px; text-align: center; border-bottom: 3px solid var(--main); box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
 
         .stats-bar {
-            background: #1e272e;
-            padding: 15px;
-            text-align: center;
-            color: var(--main);
-            display: flex;
-            justify-content: space-around;
-            font-weight: bold;
-            font-size: 14px;
-            border-bottom: 1px solid #333;
+            background: #1e272e; padding: 15px; text-align: center;
+            color: var(--main); display: flex; justify-content: space-around;
+            font-weight: bold; font-size: 14px; border-bottom: 1px solid #333;
+        }
+
+        .profit-box {
+            background: var(--card); margin: 10px 15px; padding: 15px;
+            border-radius: 12px; border: 1px dashed var(--main);
+            display: flex; justify-content: space-between; align-items: center;
         }
 
         .tabs { display: flex; gap: 8px; padding: 15px; }
-        .tab-btn {
-            flex: 1; padding: 12px; border: none; background: #222;
-            color: white; border-radius: 10px; cursor: pointer;
-            font-weight: bold; font-family: 'Cairo'; transition: 0.3s;
-        }
+        .tab-btn { flex: 1; padding: 12px; border: none; background: #222; color: white; border-radius: 10px; cursor: pointer; font-weight: bold; font-family: 'Cairo'; transition: 0.3s; }
         .tab-btn.active { background: var(--main); color: #000; box-shadow: 0 0 10px var(--main); }
 
         .container { padding: 0 15px; }
@@ -101,42 +70,22 @@
         .content.active { display: block; animation: fadeIn 0.5s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .input-card {
-            background: var(--card);
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 20px;
-            border: 1px solid #333;
-        }
+        .input-card { background: var(--card); padding: 20px; border-radius: 15px; margin-bottom: 20px; border: 1px solid #333; }
+        input { width: 100%; padding: 12px; margin: 8px 0; background: #2d3436; border: 1px solid #444; color: white; border-radius: 8px; box-sizing: border-box; font-family: 'Cairo'; outline: none; }
 
-        input {
-            width: 100%; padding: 12px; margin: 8px 0;
-            background: #2d3436; border: 1px solid #444;
-            color: white; border-radius: 8px; box-sizing: border-box;
-            font-family: 'Cairo'; outline: none;
-        }
-
-        .add-btn {
-            width: 100%; padding: 15px; background: var(--main);
-            border: none; border-radius: 8px; font-weight: bold;
-            cursor: pointer; color: #000; font-size: 16px; margin-top: 10px;
-            font-family: 'Cairo';
-        }
+        .add-btn { width: 100%; padding: 15px; background: var(--main); border: none; border-radius: 8px; font-weight: bold; cursor: pointer; color: #000; font-size: 16px; margin-top: 10px; font-family: 'Cairo'; }
 
         .table-container { background: var(--card); border-radius: 12px; overflow-x: auto; border: 1px solid #333; }
         table { width: 100%; border-collapse: collapse; min-width: 400px; }
         th { background: #222; padding: 12px; text-align: right; color: var(--main); font-size: 13px; }
         td { padding: 12px; border-bottom: 1px solid #333; font-size: 14px; }
 
+        .date-small { color: #888; font-size: 10px; display: block; margin-top: 4px; }
         .status { cursor: pointer; padding: 5px 10px; border-radius: 6px; font-size: 11px; background: #333; font-weight: bold; }
         .done { background: var(--success); color: white; }
         .delete-btn { background: none; border: none; color: var(--danger); cursor: pointer; font-size: 18px; }
 
-        footer {
-            position: fixed; bottom: 0; width: 100%;
-            background: #161d24; color: #777; text-align: center;
-            padding: 15px 0; border-top: 1px solid #333; font-size: 14px; z-index: 100;
-        }
+        footer { position: fixed; bottom: 0; width: 100%; background: #161d24; color: #777; text-align: center; padding: 15px 0; border-top: 1px solid #333; font-size: 14px; z-index: 100; }
         .dev-name { color: var(--main); font-weight: bold; }
     </style>
 </head>
@@ -154,8 +103,14 @@
 </header>
 
 <div class="stats-bar">
-    <div>إجمالي الدخل: <span id="totalMoney" style="color:var(--success)">0</span> ج.م</div>
+    <div>إجمالي البيع (الدرج): <span id="totalSales" style="color:var(--success)">0</span></div>
     <div>العمليات: <span id="totalOps">0</span></div>
+</div>
+
+<div class="profit-box">
+    <span>صافي أرباح المحل 📈</span>
+    <button onclick="toggleProfit()" id="profitBtn" style="background:var(--success); border:none; color:white; padding:5px 15px; border-radius:8px; font-family:'Cairo'; font-weight:bold;">عرض الأرباح</button>
+    <span id="totalProfitValue" style="display:none; color:var(--success); font-weight:bold; font-size:18px;">0 ج.م</span>
 </div>
 
 <div class="tabs">
@@ -168,12 +123,13 @@
         <div class="input-card">
             <input type="text" id="mCust" placeholder="اسم العميل">
             <input type="text" id="mDev" placeholder="نوع الجهاز والعطل">
-            <input type="number" id="mPrice" placeholder="تكلفة الصيانة">
+            <input type="number" id="mCost" placeholder="تكلفة قطع الغيار">
+            <input type="number" id="mPrice" placeholder="سعر الصيانة النهائي">
             <button class="add-btn" onclick="saveData('m')">حفظ في السجل ✅</button>
         </div>
         <div class="table-container">
             <table id="mTable">
-                <thead><tr><th>العميل</th><th>الجهاز</th><th>السعر</th><th>الحالة</th><th>🗑️</th></tr></thead>
+                <thead><tr><th>العميل/التاريخ</th><th>الجهاز</th><th>السعر</th><th>الحالة</th><th>🗑️</th></tr></thead>
                 <tbody></tbody>
             </table>
         </div>
@@ -182,12 +138,13 @@
     <div id="aTab" class="content">
         <div class="input-card">
             <input type="text" id="aItem" placeholder="الصنف (شاحن، سماعة...)">
+            <input type="number" id="aCost" placeholder="سعر التكلفة (جملة)">
             <input type="number" id="aPrice" placeholder="سعر البيع">
             <button class="add-btn" style="background:#00d2d3" onclick="saveData('a')">تسجيل عملية بيع 💰</button>
         </div>
         <div class="table-container">
             <table id="aTable">
-                <thead><tr><th>الصنف</th><th>السعر</th><th>الوقت</th><th>🗑️</th></tr></thead>
+                <thead><tr><th>الصنف/التاريخ</th><th>السعر</th><th>الوقت</th><th>🗑️</th></tr></thead>
                 <tbody></tbody>
             </table>
         </div>
@@ -199,7 +156,6 @@
 </footer>
 
 <script>
-    // تشغيل شاشة الترحيب
     function initApp() {
         loadData();
         setTimeout(() => {
@@ -209,7 +165,13 @@
         }, 3000); 
     }
 
-    // تبديل التبويبات
+    function toggleProfit() {
+        const p = document.getElementById('totalProfitValue');
+        const b = document.getElementById('profitBtn');
+        if(p.style.display === 'none') { p.style.display = 'inline'; b.innerText = 'إخفاء الأرباح'; } 
+        else { p.style.display = 'none'; b.innerText = 'عرض الأرباح'; }
+    }
+
     function switchTab(evt, name) {
         document.querySelectorAll(".content").forEach(c => c.classList.remove("active"));
         document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
@@ -217,21 +179,24 @@
         evt.currentTarget.classList.add("active");
     }
 
-    // حفظ البيانات في LocalStorage
     function saveData(type) {
         let db = JSON.parse(localStorage.getItem('nambar1_youssef_db')) || { m: [], a: [] };
-        const time = new Date().toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'});
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('ar-EG');
+        const timeStr = now.toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'});
 
         if(type === 'm') {
             const name = document.getElementById('mCust').value;
-            const price = document.getElementById('mPrice').value;
+            const price = parseFloat(document.getElementById('mPrice').value) || 0;
+            const cost = parseFloat(document.getElementById('mCost').value) || 0;
             if(!name || !price) return alert("برجاء إدخال البيانات كاملة");
-            db.m.push({ name, dev: document.getElementById('mDev').value, price: parseFloat(price), status: 'قيد التصليح ⏳' });
+            db.m.push({ name, dev: document.getElementById('mDev').value, fullPrice: price, profit: price - cost, status: 'قيد التصليح ⏳', date: dateStr });
         } else {
             const item = document.getElementById('aItem').value;
-            const price = document.getElementById('aPrice').value;
+            const price = parseFloat(document.getElementById('aPrice').value) || 0;
+            const cost = parseFloat(document.getElementById('aCost').value) || 0;
             if(!item || !price) return alert("برجاء إدخال الصنف والسعر");
-            db.a.push({ item, price: parseFloat(price), time });
+            db.a.push({ item, fullPrice: price, profit: price - cost, time: timeStr, date: dateStr });
         }
 
         localStorage.setItem('nambar1_youssef_db', JSON.stringify(db));
@@ -239,40 +204,45 @@
         document.querySelectorAll('input').forEach(i => i.value = '');
     }
 
-    // تحميل وعرض البيانات
     function loadData() {
         let db = JSON.parse(localStorage.getItem('nambar1_youssef_db')) || { m: [], a: [] };
-        let total = 0;
+        let totalSales = 0;
+        let totalProfit = 0;
 
-        // جدول الصيانة
         let mBody = document.querySelector("#mTable tbody");
         mBody.innerHTML = '';
         db.m.forEach((i, idx) => {
             let isDone = i.status.includes('تم') ? 'done' : '';
+            // عرض السعر الصحيح i.fullPrice والتاريخ i.date
             mBody.innerHTML += `<tr>
-                <td>${i.name}</td><td>${i.dev}</td><td style="color:var(--main)">${i.price}</td>
+                <td>${i.name}<span class="date-small">${i.date || ''}</span></td>
+                <td>${i.dev}</td>
+                <td style="color:var(--main)">${i.fullPrice || 0} ج.م</td>
                 <td><span class="status ${isDone}" onclick="toggleStatus(${idx})">${i.status}</span></td>
                 <td><button class="delete-btn" onclick="deleteItem('m', ${idx})">🗑️</button></td>
             </tr>`;
-            total += i.price;
+            totalSales += (i.fullPrice || 0);
+            totalProfit += (i.profit || 0);
         });
 
-        // جدول الاكسسوارات
         let aBody = document.querySelector("#aTable tbody");
         aBody.innerHTML = '';
         db.a.forEach((i, idx) => {
             aBody.innerHTML += `<tr>
-                <td>${i.item}</td><td style="color:var(--main)">${i.price}</td><td>${i.time}</td>
+                <td>${i.item}<span class="date-small">${i.date || ''}</span></td>
+                <td style="color:var(--main)">${i.fullPrice || 0} ج.م</td>
+                <td>${i.time}</td>
                 <td><button class="delete-btn" onclick="deleteItem('a', ${idx})">🗑️</button></td>
             </tr>`;
-            total += i.price;
+            totalSales += (i.fullPrice || 0);
+            totalProfit += (i.profit || 0);
         });
 
-        document.getElementById('totalMoney').innerText = total.toLocaleString();
+        document.getElementById('totalSales').innerText = totalSales.toLocaleString() + " ج.م";
+        document.getElementById('totalProfitValue').innerText = totalProfit.toLocaleString() + " ج.م";
         document.getElementById('totalOps').innerText = db.m.length + db.a.length;
     }
 
-    // تغيير حالة الجهاز
     function toggleStatus(idx) {
         let db = JSON.parse(localStorage.getItem('nambar1_youssef_db'));
         db.m[idx].status = db.m[idx].status.includes('تم') ? 'قيد التصليح ⏳' : 'تم التسليم ✅';
@@ -280,7 +250,6 @@
         loadData();
     }
 
-    // حذف عملية
     function deleteItem(type, index) {
         if(confirm("هل تريد حذف هذه العملية نهائياً؟")) {
             let db = JSON.parse(localStorage.getItem('nambar1_youssef_db'));
